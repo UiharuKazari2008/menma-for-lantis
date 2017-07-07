@@ -2,6 +2,18 @@
 if [ $# -lt 1 ]; then echo "No Input Data"; exit 1; fi
 # LANTIS + Menma 2 #
 # OPERATIONS ###########################################################################################################
+HEADER() {
+cat << EOF
+     __    ___    _   _________________
+    / /   /   |  / | / /_  __/  _/ ___/
+   / /   / /| | /  |/ / / /  / / \__ \ 
+  / /___/ ___ |/ /|  / / / _/ / ___/ / 
+ /_____/_/  |_/_/ |_/ /_/ /___//____/  
+ Lain Anonymous NetworkIng System
+ by : Academy City Research
+
+EOF
+}
 TEST_HOST_VERIFY () { 
 ${CMD_SSH} ${SIDE_A_HOST} -l ${SIDE_A_USER} -p ${SIDE_A_PORT} -i ${KEY} ${COMMON_OPT} << EOF
 echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Side A: OK"
@@ -38,7 +50,6 @@ if [[ $(echo $in | awk -F '[ ]' '{print $1}') != "#" ]]; then
 	if [[ $(echo $in | awk -F '[;]' '{print $1}') = "e" ]]; then
 		# e;test;127.4.4.2,22,root;43.543.45.44;22;root;/root;<;/root/backup;X;X;
 		HOST_FAILED=0
-		CONNECTION_STATUS=$(echo $in | awk -F '[;]' '{print $1}')  #Enabled[E or D]
 		CONNECTION_NAME=$(echo $in | awk -F '[;]' '{print $2}')    #Name[string]
 		L_SIDE_A_HOST=$(echo $in | awk -F '[;]' '{print $3}')      #Side A Host[string]
 		L_SIDE_A_PORT=$(echo $in | awk -F '[;]' '{print $4}')      #Side A Port[string]
@@ -65,17 +76,13 @@ if [[ $(echo $in | awk -F '[ ]' '{print $1}') != "#" ]]; then
 		if [ ${L_SIDE_B_SCRIPT} != "^" ]; then SIDE_B_SCRIPT=${L_SIDE_B_SCRIPT}; fi
 		
 		if TEST_INET_VERIFY; then TEST_INET_PASSED
-			#{ TEST_HOST_VERIFY 
-			#} || { TEST_HOST_FAILED 
-			#}; 
-			HOST_FAILED=0
+			TEST_HOST_VERIFY || TEST_HOST_FAILED 
 			if [ ${HOST_FAILED} -eq 0 ]; then
 				SIDEA="$(if [ $SIDE_A_HOST = "X" ]; then echo "${SIDE_A_FILES}"; else echo "${SIDE_A_USER}@${SIDE_A_HOST}:${SIDE_A_FILES}"; fi)"
 				SIDEB="$(if [ $SIDE_B_HOST = "X" ]; then echo "${SIDE_B_FILES}"; else echo "${SIDE_B_USER}@${SIDE_B_HOST}:${SIDE_B_FILES}"; fi)"
 				{   TRANSFER
 					echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Transfer OK"
-				} || { echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Transfer Failed!"
-				}
+				} || echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Transfer Failed!"
 			elif [ ${HOST_FAILED} -eq 1 ]; then
 				echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Host Failed!"
 			fi
@@ -86,9 +93,8 @@ fi
 done < $BACKUP_LIST
 }
 
-DRY=0; BACKUP_LIST="./sync.lantis.csv"; LOG_FILE="./lantis.log"; TIME_LAUNCH_PAUSE=4; TIME_DROP_PAUSE=2; DATE_FORMAT='+%d/%m/%Y %H:%M:%S'
-TIME_FAILED_CONN=2; TIME_FAILED_INET=5; TIMEOUT_VERIFY_INET=15; HOST_VERIFY="https://google.com"; CMD_SSH="ssh"; CMD_SCP="scp"
-HOST_FAILED=0; EMAIL=0; KEY=lantis.key
+DRY=0; BACKUP_LIST="./sync.lantis.csv"; LOG_FILE="./lantis.log"; DATE_FORMAT='+%d/%m/%Y %H:%M:%S'; TIME_FAILED_CONN=2; TIME_FAILED_INET=5
+TIMEOUT_VERIFY_INET=15; HOST_VERIFY="https://google.com"; CMD_SSH="ssh"; CMD_SCP="scp"; HOST_FAILED=0; EMAIL=0; KEY=lantis.key
 COMMON_OPT="-C -o CompressionLevel=9 -2 -o BatchMode=yes -o StrictHostKeyChecking=no -o TCPKeepAlive=yes -o ServerAliveInterval=5 -o ConnectTimeout=15 -o LogLevel=Error"
 source ./.lantis.config
 # MAIN RUNTIME #########################################################################################################
@@ -97,7 +103,7 @@ echo "[---------][$(date "${DATE_FORMAT}")][ OK ] System Ready"
 # PARSE INPUT ##########################################################################################################
 while getopts "C:XeRr:" opt; do 
   case $opt in
-  	C) PORT_LIST="${OPTARG}";;
+  	C) BACKUP_LIST="${OPTARG}";;
 	X) DRY=1;;
 	e) EMAIL=1;;
 	R) HEADER; RUN 1;;
