@@ -29,8 +29,8 @@ echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][ERR!] Sync failed!"
 sleep ${TIME_FAILED_CONN}
 }
 TRANSFER () {
-if [ ${DRY} = 1 ]; then echo "${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} ${SIDEA} ${SIDEB}"
-else ${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} ${SIDEA} ${SIDEB}; fi
+if [ ${DRY} = 1 ]; then echo "${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} $(if [ ${DIRECTION} = ">" ]; then echo "${SIDEA} ${SIDEB}"; elif [ ${DIRECTION} = "<" ]; then echo "${SIDEB} ${SIDEA}"; fi)"
+else ${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} $(if [ ${DIRECTION} = ">" ]; then echo "${SIDEA} ${SIDEB}"; elif [ ${DIRECTION} = "<" ]; then echo "${SIDEB} ${SIDEA}"; fi); fi
 }
 RUN() {
 while read in; do
@@ -64,8 +64,6 @@ if [[ $(echo $in | awk -F '[ ]' '{print $1}') != "#" ]]; then
 		if [ ${L_SIDE_A_SCRIPT} != "^" ]; then SIDE_A_SCRIPT=${L_SIDE_A_SCRIPT}; fi
 		if [ ${L_SIDE_B_SCRIPT} != "^" ]; then SIDE_B_SCRIPT=${L_SIDE_B_SCRIPT}; fi
 		
-		
-		
 		if TEST_INET_VERIFY; then TEST_INET_PASSED
 			#{ TEST_HOST_VERIFY 
 			#} || { TEST_HOST_FAILED 
@@ -74,12 +72,10 @@ if [[ $(echo $in | awk -F '[ ]' '{print $1}') != "#" ]]; then
 			if [ ${HOST_FAILED} -eq 0 ]; then
 				SIDEA="$(if [ $SIDE_A_HOST = "X" ]; then echo "${SIDE_A_FILES}"; else echo "${SIDE_A_USER}@${SIDE_A_HOST}:${SIDE_A_FILES}"; fi)"
 				SIDEB="$(if [ $SIDE_B_HOST = "X" ]; then echo "${SIDE_B_FILES}"; else echo "${SIDE_B_USER}@${SIDE_B_HOST}:${SIDE_B_FILES}"; fi)"
-				if [ ${DIRECTION} = "<" ]; then
-					{   TRANSFER
-						echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Transfer OK"
-					} || { echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Transfer Failed!"
-					}
-				fi
+				{   TRANSFER
+					echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Transfer OK"
+				} || { echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Transfer Failed!"
+				}
 			elif [ ${HOST_FAILED} -eq 1 ]; then
 				echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Host Failed!"
 			fi
