@@ -15,12 +15,14 @@ cat << EOF
 EOF
 }
 TEST_HOST_VERIFY () { 
-${CMD_SSH} ${SIDE_A_HOST} -l ${SIDE_A_USER} -p ${SIDE_A_PORT} -i ${KEY} ${COMMON_OPT} << EOF
+if [ $SIDE_A_HOST != "X" ]; then ${CMD_SSH} ${SIDE_A_HOST} -l ${SIDE_A_USER} -p ${SIDE_A_PORT} -i ${KEY} ${COMMON_OPT} << EOF
 echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Side A: OK"
 EOF
-${CMD_SSH} ${SIDE_B_HOST} -l ${SIDE_B_USER} -p ${SIDE_B_PORT} -i ${KEY} ${COMMON_OPT} << EOF
+fi
+if [ $SIDE_A_HOST != "X" ]; then ${CMD_SSH} ${SIDE_B_HOST} -l ${SIDE_B_USER} -p ${SIDE_B_PORT} -i ${KEY} ${COMMON_OPT} << EOF
 echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Side B: OK"
 EOF
+fi
 }
 TEST_HOST_FAILED () { 
 echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][ERR!] Server Verification: No Access"
