@@ -43,8 +43,8 @@ echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][ERR!] Sync failed!"
 sleep ${TIME_FAILED_CONN}
 }
 TRANSFER () {
-if [ ${DRY} = 1 ]; then echo "${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} $(if [ ${DIRECTION} = ">" ]; then echo "${SIDEA} ${SIDEB}"; elif [ ${DIRECTION} = "<" ]; then echo "${SIDEB} ${SIDEA}"; fi)"
-else ${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} $(if [ ${DIRECTION} = ">" ]; then echo "${SIDEA} ${SIDEB}"; elif [ ${DIRECTION} = "<" ]; then echo "${SIDEB} ${SIDEA}"; fi); fi
+if [ ${DRY} = 1 ]; then echo "${CMD_SCP} ${COMMON_OPT} -i ${KEY} -p -r -P ${SIDE_A_PORT} $(if [ ${DIRECTION} = ">" ]; then echo "${SIDEA} ${SIDEB}"; elif [ ${DIRECTION} = "<" ]; then echo "${SIDEB} ${SIDEA}"; fi)"
+else ${CMD_SCP} ${COMMON_OPT} -i ${KEY} -p -r -P ${SIDE_A_PORT} $(if [ ${DIRECTION} = ">" ]; then echo "${SIDEA} ${SIDEB}"; elif [ ${DIRECTION} = "<" ]; then echo "${SIDEB} ${SIDEA}"; fi); fi
 }
 RUN() {
 while read in; do
