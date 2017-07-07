@@ -29,8 +29,8 @@ echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][ERR!] Sync failed!"
 sleep ${TIME_FAILED_CONN}
 }
 TRANSFER () {
-if [ ${DRY} = 1 ]; then echo "${CMD_SCP} ${COMMON_OPT} -p -r -o Port=${REMOTE_PORT} ${SIDEA} ${SIDEB}"
-else ${CMD_SCP} ${COMMON_OPT} -p -r -o Port=${REMOTE_PORT} ${SIDEA} ${SIDEB}; fi
+if [ ${DRY} = 1 ]; then echo "${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} ${SIDEA} ${SIDEB}"
+else ${CMD_SCP} ${COMMON_OPT} -p -r -P ${SIDE_A_PORT} ${SIDEA} ${SIDEB}; fi
 }
 RUN() {
 while read in; do
@@ -83,7 +83,8 @@ if [[ $(echo $in | awk -F '[ ]' '{print $1}') != "#" ]]; then
 			elif [ ${HOST_FAILED} -eq 1 ]; then
 				echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][FAIL] Host Failed!"
 			fi
-		else TEST_INET_FAILED; fi; TEST_CONN_FAILED
+		else TEST_INET_FAILED
+		fi
 	fi
 fi
 done < $BACKUP_LIST
