@@ -19,7 +19,7 @@ if [ $SIDE_A_HOST != "X" ]; then ${CMD_SSH} ${SIDE_A_HOST} -l ${SIDE_A_USER} -p 
 echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Side A: OK"
 EOF
 fi
-if [ $SIDE_A_HOST != "X" ]; then ${CMD_SSH} ${SIDE_B_HOST} -l ${SIDE_B_USER} -p ${SIDE_B_PORT} -i ${KEY} ${COMMON_OPT} << EOF
+if [ $SIDE_B_HOST != "X" ]; then ${CMD_SSH} ${SIDE_B_HOST} -l ${SIDE_B_USER} -p ${SIDE_B_PORT} -i ${KEY} ${COMMON_OPT} << EOF
 echo "[${CONNECTION_NAME}][$(date "${DATE_FORMAT}")][INFO] Side B: OK"
 EOF
 fi
