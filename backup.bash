@@ -47,8 +47,8 @@ if [[ $(echo $in | awk -F '[ ]' '{print $1}') != "#" ]]; then
 		L_SIDE_B_PORT=$(echo $in | awk -F '[;]' '{print $7}')      #Side B Port[string]
 		L_SIDE_B_USER=$(echo $in | awk -F '[;]' '{print $8}')      #Side B User[string]
 		L_SIDE_A_FILES=$(echo $in | awk -F '[;]' '{print $9}')     #Remote Files and Folders[string]
-		L_SIDE_B_FILES=$(echo $in | awk -F '[;]' '{print $10}')    #Local Files and Folders[string]
-		L_DIRECTION=$(echo $in | awk -F '[;]' '{print 11}')        #Direction[string]
+		L_SIDE_B_FILES=$(echo $in | awk -F '[;]' '{print $11}')    #Local Files and Folders[string]
+		L_DIRECTION=$(echo $in | awk -F '[;]' '{print $10}')       #Direction[string]
 		L_SIDE_A_SCRIPT=$(echo $in | awk -F '[;]' '{print $12}')   #Remote Post script[string]
 		L_SIDE_B_SCRIPT=$(echo $in | awk -F '[;]' '{print $13}')   #Local Post script[string]
 		
